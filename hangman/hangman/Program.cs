@@ -29,8 +29,6 @@ namespace HangmanGameMVC
                         var user = authController.Login();
                         if (user != null)
                         {
-                            
-
                             // Admin or User
                             if (user.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
                                 gameController.AdminMenu(); // admin menu handles play/add/update/delete

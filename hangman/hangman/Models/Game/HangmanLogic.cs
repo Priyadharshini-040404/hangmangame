@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic; // ✅ Needed for HashSet
+using System.Linq;
 
 namespace HangmanGameMVC.Models.Game
 {
@@ -6,6 +8,7 @@ namespace HangmanGameMVC.Models.Game
     {
         private GameState _state;
         private bool _askPlayAgain;
+        private HashSet<char> _guessedLetters = new HashSet<char>(); // ✅ Track guessed letters
 
         public HangmanLogic(string word)
         {
@@ -19,6 +22,7 @@ namespace HangmanGameMVC.Models.Game
             _state.GameOver = false;
             _state.WordCompleted = false;
             _askPlayAgain = false;
+            _guessedLetters.Clear(); // ✅ Reset guessed letters each round
 
             for (int i = 0; i < _state.CurrentProgress.Length; i++)
                 _state.CurrentProgress[i] = '_';
@@ -30,6 +34,18 @@ namespace HangmanGameMVC.Models.Game
 
             letter = char.ToUpper(letter);
             bool correct = false;
+
+            // ✅ Check if letter was already guessed (correct or wrong)
+            if (_guessedLetters.Contains(letter))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\nYou already guessed '{letter}'. Try a different letter!");
+                Console.ResetColor();
+                return false; // Do NOT change attempts or progress
+            }
+
+            // ✅ Record the guessed letter
+            _guessedLetters.Add(letter);
 
             // Fill all occurrences of guessed letter
             for (int i = 0; i < _state.WordToGuess.Length; i++)
@@ -83,7 +99,6 @@ namespace HangmanGameMVC.Models.Game
                     _state.LetterIndex = 0;
                     _state.AttemptCount = 3;
                 }
-
             }
 
             return correct;
